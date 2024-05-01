@@ -11,8 +11,14 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
+import wasm from '../target/wasm-gc/release/build/hello.wasm';
+const module = await WebAssembly.instantiate(wasm);
+module.exports._start();
+
+export interface Env {}
+
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-		return new Response('Hello World!');
+		return new Response(`Hello World! ${module.exports.fib(10)}`);
 	},
 };
